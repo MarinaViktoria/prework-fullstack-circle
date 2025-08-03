@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useDebounce } from "use-debounce";
 import MenuItem from "../components/MenuItem/MenuItem.jsx";
 
 import styles from "./RestaurantView.module.css";
@@ -8,7 +9,9 @@ import SearchField from "../components/SearchField/SearchField.jsx";
 const RestaurantView = () => {
   const [dishes, setDishes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 500); // wait 500ms
 
+  // all dishes at firs mount
   useEffect(() => {
     fetch("https://www.themealdb.com/api/json/v1/1/search.php?s=")
       .then((res) => (res.ok ? res.json() : { meals: [] }))
@@ -16,12 +19,15 @@ const RestaurantView = () => {
       .catch(() => setDishes([]));
   }, []);
 
+  // search debounced value after every change
   useEffect(() => {
-    if (searchTerm.trim() === "") return;
+    if (debouncedSearchTerm.trim() === "") return;
 
     let isActive = true;
 
-    fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchTerm}`)
+    fetch(
+      `https://www.themealdb.com/api/json/v1/1/search.php?s=${debouncedSearchTerm}`
+    )
       .then((res) => (res.ok ? res.json() : { meals: null }))
       .then((result) => {
         if (!isActive) return;
@@ -35,7 +41,7 @@ const RestaurantView = () => {
     return () => {
       isActive = false;
     };
-  }, [searchTerm]);
+  }, [debouncedSearchTerm]);
 
   return (
     <>

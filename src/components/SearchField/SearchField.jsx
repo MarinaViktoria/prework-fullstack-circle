@@ -6,11 +6,12 @@ const SearchField = ({ onSearch }) => {
 
   const handleChange = (event) => {
     setInputValue(event.target.value);
+    onSearch(event.target.value); //Forward value to parent immediately
   };
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter" && inputValue.trim() !== "") {
-      onSearch(inputValue); // Forward value to parent
+      onSearch(inputValue); //Forward value to parent
       setInputValue("");
     }
   };
