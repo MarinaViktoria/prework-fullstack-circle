@@ -4,17 +4,21 @@ import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary.jsx";
 import MenuItemDetails from "./components/MenuItem/MenuItemDetails.jsx";
 import RestaurantView from "./views/RestaurantView.jsx";
 
+import { CartProvider } from "./context/CartContext.jsx";
+
 import "./App.css";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route index element={<RestaurantView />} />
-        <Route path="/meals/:id" element={<MenuItemDetails />} />
-        <Route path="/*" element={<p>404 Page not found</p>} />
-      </Routes>
-    </Router>
+    <CartProvider>
+      <Router>
+        <Routes>
+          <Route index element={<RestaurantView />} />
+          <Route path="/meals/:id" element={<MenuItemDetails />} />
+          <Route path="/*" element={<p>404 Page not found</p>} />
+        </Routes>
+      </Router>
+    </CartProvider>
   );
 }
 
